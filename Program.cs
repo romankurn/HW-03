@@ -6,13 +6,11 @@
 		{
 			var UserData = GetUserData();
 
-
+			ShowResults(UserData);
 		}
 
 		static (string Name, string LastName, int Age, string[] PetNames, string[] favoriteColors) GetUserData()
-		{
-			//(string Name, string LastName, int Age, string[] PetNames, string[] favoriteColors) UserData ;
-
+		{			
 			var Name = GetUserName();
 
 			var LastName = GetUserLastName();
@@ -22,9 +20,7 @@
 			var PetNames = GetPetNames();
 
 			var FavoriteColors = GetFavoriteColors();
-
-			//UserData = (Name, LastName, Age, PetNames, FavoriteColors);
-
+			
 			return (Name, LastName, Age, PetNames, FavoriteColors);
 		}
 
@@ -44,6 +40,8 @@
 
 		static string GetUserLastName()
 		{
+			Console.Clear();
+			
 			while (true)
 			{
 				Console.WriteLine("Введите вашу фамилию:");
@@ -58,6 +56,8 @@
 
 		static int GetUserAge()
 		{
+			Console.Clear();
+
 			while (true)
 			{
 				Console.WriteLine("Введите ваш возраст в виде числа:");
@@ -77,20 +77,23 @@
 		}
 		
 		static string[] GetPetNames()
-		{			
+		{
+			Console.Clear();
+
 			Console.WriteLine($"У вас есть питомцы?{Environment.NewLine}1 - у вас есть питомцы{Environment.NewLine}0 - у вас нет питомцев");
 			var key = Console.ReadKey();
+			Console.WriteLine();
 
 			while (true)
 			{
-				if (key.KeyChar == 0 || key.KeyChar == 1)
+				if (key.KeyChar == '0' || key.KeyChar == '1')
 					break;
 
 				Console.WriteLine($"Введены неверные данные{Environment.NewLine}Если у вас есть питомцы, нажмите 1. Если у вас нет питомцев, нажмите 0");
 				key = Console.ReadKey();
 			}
 
-			if (key.KeyChar == 0)
+			if (key.KeyChar == '0')
 				return Array.Empty<string>();
 
 			Console.WriteLine($"Сколько у вас питомцев?");
@@ -98,7 +101,7 @@
 
 			while (true)
 			{
-				if (int.TryParse(Console.ReadLine(), out int number))
+				if (int.TryParse(Console.ReadLine(), out int number) && number > 0)
 				{ 
 					petsNumber = number;
 					break;
@@ -118,7 +121,7 @@
 
 					if(enteredValue != null)
 					{
-						petNames[i] = Console.ReadLine();
+						petNames[i] = enteredValue;
 						break;
 					}
 				}				
@@ -129,13 +132,15 @@
 
 		static string[] GetFavoriteColors()
 		{
+			Console.Clear();
+
 			Console.WriteLine("Сколько у вас любимых цветов?");
 
 			var colorsNumber = 0;
 
 			while (true)
 			{
-				if (int.TryParse(Console.ReadLine(), out int number) || number >= 1)
+				if (int.TryParse(Console.ReadLine(), out int number) && number > 0)
 				{
 					colorsNumber = number;
 					break;
@@ -168,12 +173,41 @@
 			return FavoriteColors;
 		}
 
+		static void ShowResults((string Name, string LastName, int Age, string[] PetNames, string[] favoriteColors) data)
+		{
+			Console.Clear();
+
+			Console.WriteLine($"Вас зовут: {data.LastName} {data.Name}");
+			Console.WriteLine($"Вам {data.Age} лет(год)");
+
+			if(data.PetNames == null || data.PetNames.Length == 0)
+			{
+				Console.WriteLine("У вас нет питомцев");
+			}
+			else
+			{
+				Console.WriteLine($"У вас есть питомцы:");
+
+				foreach (var petName in data.PetNames)
+				{ 
+					Console.WriteLine($"{petName}"); 
+				}
+			}
+
+			Console.WriteLine("Ваши люббимые цвета: ");
+
+			foreach(var favoriteColor in data.favoriteColors)
+			{
+				Console.WriteLine($"{favoriteColor}");
+			}
+		}
+
 		static bool ValidateEnteredValue(string value)
 		{
 			if (value == null)
 				return false;
 
-			if (value.Length < 1)
+			if (value.Length <= 1)
 				return false;
 
 			foreach (var item in value)
